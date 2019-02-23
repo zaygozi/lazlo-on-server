@@ -17,8 +17,10 @@
   },
   "homepage": "https://github.com/zaygozi/lazlo-on-server#readme",
   "dependencies": {
+    "aws-sdk": "^2.409.0",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
-    "lazlo-node": "^0.7.5"
+    "lazlo-node": "^0.7.5",
+    "node-watch": "^0.6.0"
   }
 }

@@ -1,6 +1,9 @@
-const {lazlo} = require('./dbconf');
 const express = require('express');
 const bodyParser = require('body-parser');
+const {backup} = require('./backup');
+const {restore} = require('./backup');
+const watch = require('node-watch');
+const fs = require('fs');
 
 const server = express();
 
@@ -8,6 +11,22 @@ let port = process.env.PORT || 3000;
 
 server.use(bodyParser.json({type : "*/*"}));
 
+// Restore if data is lost
+watch('./database', (evt,name) => {
+    if (evt === 'update') {
+        fs.readdir('./database', (err,files) => {
+            if (err) throw err;
+            if (files.length === 0) {
+                restore();  //restoring from s3 bucket
+            }
+        })
+    }
+});
+
+//Backup files every 6 hrs
+setInterval(backup, 21600000);
+
+// Routes
 server.post('/insert/:docname',(req,res) => {
     let data = JSON.stringify(req.body);
     let doc = req.params.docname;
