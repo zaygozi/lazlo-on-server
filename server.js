@@ -2,12 +2,19 @@ require('dotenv').config();  //Development environment requirement
 const {lazlo} = require('./dbconf');
 const express = require('express');
 const bodyParser = require('body-parser');
-const {backup} = require('./backup');
-const {restore} = require('./backup');
-const {restoreAll} = require('./backup');
+const {restore} = require('./recovery');
+const {restoreAll} = require('./recovery');
 const chokidar = require('chokidar');
 const path = require('path');
 const fs = require('fs');
+const aws = require('aws-sdk');
+
+aws.config.update({
+    accessKeyId: process.env.AKI,
+    secretAccessKey: process.env.SAK
+});
+
+const s3 = new aws.S3();
 
 const server = express();
 
@@ -31,7 +38,25 @@ watcher.on('unlink', (filePath) => {
 }); 
 
 //Backup files every 2 hrs
-setInterval(function () { backup() }, 7200000);
+setInterval(function createBackup() {
+
+    fs.readdir('./database', (err, files) => {
+        files.forEach(file => {
+
+            let params = {
+                Bucket: process.env.BUCKET,
+                Body: fs.createReadStream('./database/' + file),
+                Key: file
+            };
+
+            s3.upload(params, (err, data) => {
+                if (err) throw err;
+                console.log(`Database backup created at ${data.Location}`);
+            });
+
+        });
+    });
+}, 7200000);
 
 // Routes
 server.post('/insert/:docname',(req,res) => {

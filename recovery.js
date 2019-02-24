@@ -8,28 +8,6 @@ aws.config.update({
 
 const s3 = new aws.S3();
 
-function backup() {
-
-    fs.readdir('./database', (err, files) => {
-        files.forEach(file => {
-
-            let params = {
-                Bucket: process.env.BUCKET,
-                Body: fs.createReadStream('./database/' + file),
-                Key: file
-            };
-
-            s3.upload(params, (err, data) => {
-                if (err) throw err;
-                console.log(`Database backup created at ${data.Location}`);
-            });
-
-        });
-    });
-}
-
-module.exports = {backup};
-
 function restore(docname) {
 
     let params = {
