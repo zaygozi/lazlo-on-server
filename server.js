@@ -1,9 +1,12 @@
+require('dotenv').config();  //Development environment requirement
 const {lazlo} = require('./dbconf');
 const express = require('express');
 const bodyParser = require('body-parser');
 const {backup} = require('./backup');
 const {restore} = require('./backup');
-const watch = require('node-watch');
+const {restoreAll} = require('./backup');
+const chokidar = require('chokidar');
+const path = require('path');
 const fs = require('fs');
 
 const server = express();
@@ -12,20 +15,23 @@ let port = process.env.PORT || 3000;
 
 server.use(bodyParser.json({type : "*/*"}));
 
-// Restore if data is lost
-watch('./database', (evt,name) => {
-    if (evt === 'update') {
-        fs.readdir('./database', (err,files) => {
-            if (err) throw err;
-            if (files.length === 0) {
-                restore();  //restoring from s3 bucket
-            }
-        })
+// Restore if database is erased
+fs.readdir('./database', (err,files) => {
+    if (err) throw err;
+    if(files.length === 0) {
+        restoreAll();
     }
 });
 
-//Backup files every 6 hrs
-setInterval(backup, 21600000);
+// Restore particular documents
+let watcher = chokidar.watch('./database', {persistent : true});
+watcher.on('unlink', (filePath) => {
+    let docname = path.basename(filePath);
+    restore(docname);
+}); 
+
+//Backup files every 2 hrs
+setInterval(function () { backup() }, 7200000);
 
 // Routes
 server.post('/insert/:docname',(req,res) => {

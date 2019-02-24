@@ -30,8 +30,25 @@ function backup() {
 
 module.exports = {backup};
 
-function restore() {
+function restore(docname) {
 
+    let params = {
+        Bucket: process.env.BUCKET,
+        Key: docname
+    }
+
+    s3.getObject(params, (err, data) => {
+        if (err) throw err;
+        fs.writeFile(`${__dirname}/database/${docname}`, data.Body, (err) => {
+            if (err) throw err;
+            console.log(`Restored document : ${docname}`)
+        });
+    });
+}
+
+module.exports = {restore};
+
+function restoreAll() {
     let listparams = {
         Bucket: process.env.BUCKET
     }
@@ -39,23 +56,28 @@ function restore() {
     s3.listObjects(listparams, (err, data) => {
         if (err) throw err;
         let objects = data.Contents;
-        objects.forEach(obj => {
-            
-            let params = {
-                Bucket: process.env.BUCKET,
-                Key: obj.Key
-            }
+        if(objects.length != 0) {
+            objects.forEach(obj => {
 
-            s3.getObject(params, (err, data) => {
-                if (err) throw err;
-                fs.writeFile(`${__dirname}/database/${obj.Key}`, data.Body, (err) => {
+                let params = {
+                    Bucket: process.env.BUCKET,
+                    Key: obj.Key
+                }
+
+                s3.getObject(params, (err, data) => {
                     if (err) throw err;
-                    console.log(`Restored document : ${obj.Key}`)
+                    fs.writeFile(`${__dirname}/database/${obj.Key}`, data.Body, (err) => {
+                        if (err) throw err;
+                        console.log(`Restored document : ${obj.Key}`)
+                    });
                 });
-            });
 
-        });
+            });
+        }
+        else {
+            console.log('No backups found on remote server');
+        }
     });
 }
 
-module.exports = {restore};
+module.exports = {restoreAll};

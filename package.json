@@ -19,8 +19,9 @@
   "dependencies": {
     "aws-sdk": "^2.409.0",
     "body-parser": "^1.18.3",
+    "chokidar": "^2.1.2",
+    "dotenv": "^6.2.0",
     "express": "^4.16.4",
-    "lazlo-node": "^0.7.5",
-    "node-watch": "^0.6.0"
+    "lazlo-node": "^0.7.5"
   }
 }
