@@ -1,3 +1,4 @@
+const {lazlo} = require('./dbconf');
 const express = require('express');
 const bodyParser = require('body-parser');
 const {backup} = require('./backup');
