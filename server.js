@@ -60,28 +60,29 @@ setInterval(function createBackup() {
 
 // Routes
 server.post('/insert/:docname',(req,res) => {
-    let data = JSON.stringify(req.body);
-    let doc = req.params.docname;
-    lazlo.doc(doc, (err) => {
-        if (err) throw res.status(400).send(err);
-        console.log(`Accessing document : ${doc}`);
-        lazlo.insertOne(data, (err,record) => {
-            if (err) throw res.status(400).send(err);
-            res.send(record);
-        });
-    });
-});
+    
+    const isObject = function (a) {
+        return (!!a) && (a.constructor === Object);
+    };
 
-server.post('/batch-insert/:docname', (req, res) => {
-    let data = JSON.stringify(req.body);
     let doc = req.params.docname;
+    let data = JSON.stringify(req.body);
+
     lazlo.doc(doc, (err) => {
         if (err) throw res.status(400).send(err);
         console.log(`Accessing document : ${doc}`);
-        lazlo.insert(data, (err, records) => {
-            if (err) throw res.status(400).send(err);
-            res.send(records);
-        });
+        if(isObject(req.body)) {
+            lazlo.insertOne(data, (err, record) => {
+                if (err) throw res.status(400).send(err);
+                res.send(record);
+            });
+        }
+        else {
+            lazlo.insert(data, (err, records) => {
+                if (err) throw res.status(400).send(err);
+                res.send(records);
+            }); 
+        }
     });
 });
 
