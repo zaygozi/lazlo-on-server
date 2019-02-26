@@ -98,29 +98,48 @@ server.get('/:docname', (req,res) => {
     });
 });
 
-server.get('/:docname/:roll', (req,res) => {
+server.get('/:docname/:key/:val', (req,res) => {
     let doc = req.params.docname;
-    let roll = req.params.roll;
+    let key = req.params.key;
+    let val = req.params.val;
     lazlo.doc(doc, (err) => {
         if (err) throw res.status(400).send(err);
         console.log(`Accessing document : ${doc}`);
-        lazlo.fetch('roll', roll, 'eq', (err,data) => {
+        lazlo.fetch(key, val, 'eq', (err,data) => {
             if (err) throw res.status(400).send(err);
             res.send(data);
         });
     });
 });
 
-server.delete('/:docname/:roll', (req,res) => {
+server.delete('/:docname/:key/:val', (req,res) => {
     let doc = req.params.docname;
-    let roll = parseInt(req.params.roll);
+    let key = req.params.key;
+    let val = req.params.val;
     lazlo.doc(doc, (err) => {
         if (err) throw res.status(400).send(err);
         console.log(`Accessing document : ${doc}`);
-        lazlo.remove('roll', roll, (err,record) => {
+        lazlo.remove(key, val, (err,record) => {
             if (err) throw res.status(400).send(err);
             res.send(record);
         });
+    });
+});
+
+server.patch('/:docname/:key/:val', (req,res) => {
+    let doc = req.params.docname;
+    let key = req.params.key;
+    let val = req.params.val;
+    let data = req.body;
+    lazlo.doc(doc, (err) => {
+        if (err) throw res.status(400).send(err);
+        console.log(`Accessing document : ${doc}`);
+        for (var par in data) {
+            lazlo.update(key, val, par, data[par], (err,record) => {
+                if (err) throw res.status(400).send(err);
+                res.send(record);        
+            });
+        }
     });
 });
 
