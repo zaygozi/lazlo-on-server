@@ -134,16 +134,17 @@ server.patch('/:docname/:key/:val', (req,res) => {
     lazlo.doc(doc, (err) => {
         if (err) throw res.status(400).send(err);
         console.log(`Accessing document : ${doc}`);
-        let updatedRecord;
-        let error = null;
-        for (var par in data) {
-            lazlo.update(key, val, par, data[par], (err,record) => {
-                if (err) throw error = err;
-                updatedRecord = record;        
-            });
+        if(Object.keys(data).length === 1) {
+            for(par in data) {
+                lazlo.update(key, val, par, data[par], (err, record) => {
+                    if (err) throw res.status(400).send(err);
+                    res.send(record);
+                });
+            }
         }
-        if (error) throw res.status(400).send(error);
-        res.send(updatedRecord);
+        else {
+            res.status(400).send('Number of properties is greater than or lesser than 1');
+        }
     });
 });
 
