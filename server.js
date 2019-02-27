@@ -130,7 +130,7 @@ server.patch('/:docname/:key/:val', (req,res) => {
     let doc = req.params.docname;
     let key = req.params.key;
     let val = req.params.val;
-    let data = JSON.parse(req.body);
+    let data = req.body;
     lazlo.doc(doc, (err) => {
         if (err) throw res.status(400).send(err);
         console.log(`Accessing document : ${doc}`);
