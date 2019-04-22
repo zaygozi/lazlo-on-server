@@ -1,0 +1,78 @@
+<html>
+    <head>
+        <title>Lazos</title>
+        <link rel="icon" href="favicon.png">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <style>
+        body
+        {
+            background-color: #E8EBF0;
+        }
+        .ftrmark
+        {
+            background-color: #4A0572;
+            color: #ffffff;
+            padding: 10px;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+        .txtwhite
+        {
+            text-decoration: none;
+            color: #ffffff;
+            font-weight: bold;
+        }
+        </style>
+    </head>
+    <body>
+        <div class="jumbotron" align="center">
+            <img src="lazlo-logo.png" height="80">
+            <!-- <h1>LAZOS API</h1> -->
+            <br><br>
+            <table style="text-align:center; height: 350; width: 850">
+                <tr class="table-dark">
+                    <th>ACTION</th>
+                    <th>REQUEST</th>
+                    <th>ENDPOINT</th>
+                </tr>
+                <tr class="table-success">
+                    <th>Insert</th>
+                    <th>POST</th>
+                    <th>lazos.herokuapp.com/{docname}</th>
+                </tr>
+                <tr class="table-primary">
+                    <th>Fetch All</th>
+                    <th>GET</th>
+                    <th>lazos.herokuapp.com/{docname}</th>
+                </tr>
+                <tr class="table-info">
+                    <th>Fetch Specific</th>
+                    <th>GET</th>
+                    <th>lazos.herokuapp.com/{docname}/{key}/{value}</th>
+                </tr>
+                <tr class="table-warning">
+                    <th>Update</th>
+                    <th>PATCH</th>
+                    <th>lazos.herokuapp.com/{docname}/{key}/{value}</th>
+                </tr>
+                <tr class="table-danger">
+                    <th>Delete</th>
+                    <th>DELETE</th>
+                    <th>lazos.herokuapp.com/{docname}/{key}/{value}</th>
+                </tr>
+            </table>
+        </div>
+        <!-- Footer -->
+        <footer class="page-footer font-small blue">
+        
+            <!-- Copyright -->
+            <div class="footer-copyriftrmarkght text-center py-3 ftrmark">© 2019 Copyright:
+                <a href="https://github.com/zaygozi/lazlo-on-server" class="txtwhite">Lazos API</a>
+            </div>
+            <!-- Copyright -->
+        
+        </footer>
+        <!-- Footer -->
+    </body>
+</html>

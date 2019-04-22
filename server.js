@@ -20,6 +20,8 @@ const server = express();
 
 let port = process.env.PORT || 3000;
 
+server.use(express.static(`${__dirname}/public`));
+
 server.use(bodyParser.json({type : "*/*"}));
 
 // Restore if database is erased
@@ -66,7 +68,7 @@ server.post('/insert/:docname',(req,res) => {
     };
 
     let doc = req.params.docname;
-    let data = JSON.stringify(req.body);
+    let data = JSON.stringify(req.body); 
 
     lazlo.doc(doc, (err) => {
         if (err) throw res.status(400).send(err);
